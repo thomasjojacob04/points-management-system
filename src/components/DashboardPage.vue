@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="text-center mb-6">
       <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-700 mb-2">
-        TIRUVALLA MEKHALA KALOLSAVAM 2K25
+        THIRUVALLA MEKHALA KALOLSAVAM 2K25
       </h1>
       <div class="w-20 h-0.5 bg-red-500 mx-auto rounded-full"></div>
     </div>

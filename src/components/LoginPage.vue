@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="text-center mb-6">
         <h1 class="text-xl font-bold text-red-700 mb-1">
-          TIRUVALLA MEKHALA KALOLSAVAM 2K25
+          THIRUVALLA MEKHALA KALOLSAVAM 2K25
         </h1>
         <div class="w-16 h-0.5 bg-red-500 mx-auto mb-4"></div>
         <h2 class="text-lg font-semibold text-gray-800">Admin Login</h2>
