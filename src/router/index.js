@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardPage from '../components/DashboardPage.vue'
 import AdminPanel from '../components/AdminPanel.vue'
+import UnifiedManagement from '../components/UnifiedManagement.vue'
 import LoginPage from '../components/LoginPage.vue'
 import { checkAuthStatus } from '../utils/authGuard'
 
@@ -19,6 +20,12 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminPanel,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/admin/manage',
+    name: 'UnifiedManagement',
+    component: UnifiedManagement,
     meta: { requiresAuth: true }
   }
 ]

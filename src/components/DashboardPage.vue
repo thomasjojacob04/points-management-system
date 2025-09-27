@@ -13,7 +13,7 @@
       <div class="bg-white rounded-lg shadow-sm border border-red-100">
         <div class="bg-red-600 p-4">
           <h2 class="text-lg sm:text-xl font-semibold text-white mb-1">
-            Units Leaderboard
+            Units Scoreboard
           </h2>
           <p class="text-red-100 text-sm">Click on any unit name to view details</p>
         </div>
