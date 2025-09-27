@@ -18,14 +18,24 @@
       <!-- Units Management Section -->
       <div class="space-y-6">
         <!-- Add/Edit Unit Form -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div 
+          ref="unitFormRef"
+          :class="[
+            'bg-white rounded-lg shadow p-6 transition-all duration-300',
+            editingUnit ? 'ring-4 ring-yellow-200 bg-yellow-50' : ''
+          ]"
+        >
           <h3 class="text-xl font-bold mb-4 text-blue-700">
             {{ editingUnit ? 'Edit Unit' : 'Add New Unit' }}
+            <span v-if="editingUnit" class="text-sm font-normal text-yellow-600 ml-2">
+              (Editing: {{ editingUnit.name }})
+            </span>
           </h3>
           <form @submit.prevent="editingUnit ? updateUnit() : addUnit()" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Unit Name</label>
               <input
+                ref="unitInputRef"
                 v-model="unitForm.name"
                 type="text"
                 placeholder="Enter unit name"
@@ -79,7 +89,12 @@
             <div 
               v-for="unit in filteredUnits" 
               :key="unit.id"
-              class="flex justify-between items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+              :class="[
+                'flex justify-between items-center p-3 rounded-lg transition-colors',
+                editingUnit && editingUnit.id === unit.id 
+                  ? 'bg-yellow-200 border-2 border-yellow-400' 
+                  : 'bg-blue-50 hover:bg-blue-100'
+              ]"
             >
               <div>
                 <span class="font-medium text-gray-900">{{ unit.name }}</span>
@@ -90,13 +105,24 @@
               <div class="flex gap-2">
                 <button
                   @click="editUnit(unit)"
-                  class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm transition-colors"
+                  :class="[
+                    'px-3 py-1 rounded text-sm transition-colors',
+                    editingUnit && editingUnit.id === unit.id
+                      ? 'bg-yellow-600 text-white'
+                      : 'bg-yellow-500 text-white hover:bg-yellow-600'
+                  ]"
                 >
-                  Edit
+                  {{ editingUnit && editingUnit.id === unit.id ? 'Editing' : 'Edit' }}
                 </button>
                 <button
                   @click="deleteUnit(unit.id, unit.name)"
-                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm transition-colors"
+                  :disabled="editingUnit && editingUnit.id === unit.id"
+                  :class="[
+                    'px-3 py-1 rounded text-sm transition-colors',
+                    editingUnit && editingUnit.id === unit.id
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      : 'bg-red-500 text-white hover:bg-red-600'
+                  ]"
                 >
                   Delete
                 </button>
@@ -120,14 +146,24 @@
       <!-- Activities Management Section -->
       <div class="space-y-6">
         <!-- Add/Edit Activity Form -->
-        <div class="bg-white rounded-lg shadow p-6">
+        <div 
+          ref="activityFormRef"
+          :class="[
+            'bg-white rounded-lg shadow p-6 transition-all duration-300',
+            editingActivity ? 'ring-4 ring-yellow-200 bg-yellow-50' : ''
+          ]"
+        >
           <h3 class="text-xl font-bold mb-4 text-green-700">
             {{ editingActivity ? 'Edit Activity' : 'Add New Activity' }}
+            <span v-if="editingActivity" class="text-sm font-normal text-yellow-600 ml-2">
+              (Editing: {{ editingActivity.name }})
+            </span>
           </h3>
           <form @submit.prevent="editingActivity ? updateActivity() : addActivity()" class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Activity Name</label>
               <input
+                ref="activityInputRef"
                 v-model="activityForm.name"
                 type="text"
                 placeholder="Enter activity name"
@@ -181,7 +217,12 @@
             <div 
               v-for="activity in filteredActivities" 
               :key="activity.id"
-              class="flex justify-between items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+              :class="[
+                'flex justify-between items-center p-3 rounded-lg transition-colors',
+                editingActivity && editingActivity.id === activity.id 
+                  ? 'bg-yellow-200 border-2 border-yellow-400' 
+                  : 'bg-green-50 hover:bg-green-100'
+              ]"
             >
               <div>
                 <span class="font-medium text-gray-900">{{ activity.name }}</span>
@@ -192,13 +233,24 @@
               <div class="flex gap-2">
                 <button
                   @click="editActivity(activity)"
-                  class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 text-sm transition-colors"
+                  :class="[
+                    'px-3 py-1 rounded text-sm transition-colors',
+                    editingActivity && editingActivity.id === activity.id
+                      ? 'bg-yellow-600 text-white'
+                      : 'bg-yellow-500 text-white hover:bg-yellow-600'
+                  ]"
                 >
-                  Edit
+                  {{ editingActivity && editingActivity.id === activity.id ? 'Editing' : 'Edit' }}
                 </button>
                 <button
                   @click="deleteActivity(activity.id, activity.name)"
-                  class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm transition-colors"
+                  :disabled="editingActivity && editingActivity.id === activity.id"
+                  :class="[
+                    'px-3 py-1 rounded text-sm transition-colors',
+                    editingActivity && editingActivity.id === activity.id
+                      ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      : 'bg-red-500 text-white hover:bg-red-600'
+                  ]"
                 >
                   Delete
                 </button>
@@ -223,7 +275,7 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, serverTimestamp } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -243,6 +295,12 @@ export default {
     const editingActivity = ref(null)
     const unitsSearchQuery = ref('')
     const activitiesSearchQuery = ref('')
+    
+    // Template refs
+    const unitFormRef = ref(null)
+    const activityFormRef = ref(null)
+    const unitInputRef = ref(null)
+    const activityInputRef = ref(null)
 
     // Computed properties
     const filteredUnits = computed(() => {
@@ -258,6 +316,17 @@ export default {
         activity.name.toLowerCase().includes(activitiesSearchQuery.value.toLowerCase())
       )
     })
+
+    // Helper function to scroll to element
+    const scrollToElement = (elementRef) => {
+      if (elementRef && elementRef.value) {
+        elementRef.value.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center',
+          inline: 'nearest'
+        })
+      }
+    }
 
     // Fetch data functions
     const fetchUnits = async () => {
@@ -305,9 +374,21 @@ export default {
       }
     }
 
-    const editUnit = (unit) => {
+    const editUnit = async (unit) => {
       editingUnit.value = unit
       unitForm.value.name = unit.name
+      
+      // Wait for DOM update and then scroll to form
+      await nextTick()
+      scrollToElement(unitFormRef)
+      
+      // Focus on input after a short delay
+      setTimeout(() => {
+        if (unitInputRef.value) {
+          unitInputRef.value.focus()
+          unitInputRef.value.select()
+        }
+      }, 300)
     }
 
     const updateUnit = async () => {
@@ -360,9 +441,21 @@ export default {
       }
     }
 
-    const editActivity = (activity) => {
+    const editActivity = async (activity) => {
       editingActivity.value = activity
       activityForm.value.name = activity.name
+      
+      // Wait for DOM update and then scroll to form
+      await nextTick()
+      scrollToElement(activityFormRef)
+      
+      // Focus on input after a short delay
+      setTimeout(() => {
+        if (activityInputRef.value) {
+          activityInputRef.value.focus()
+          activityInputRef.value.select()
+        }
+      }, 300)
     }
 
     const updateActivity = async () => {
@@ -439,6 +532,10 @@ export default {
       activitiesSearchQuery,
       filteredUnits,
       filteredActivities,
+      unitFormRef,
+      activityFormRef,
+      unitInputRef,
+      activityInputRef,
       addUnit,
       editUnit,
       updateUnit,
